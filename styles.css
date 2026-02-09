@@ -1,0 +1,145 @@
+:root{
+  --bg:#f6e8f2;
+  --accent:#d6336c;
+  --box:#ff9bb3;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:linear-gradient(180deg,rgba(246,232,242,0.85),rgba(255,255,255,0.85)),url('https://media.giphy.com/media/jiVsld6wK2ay1Z8ZrG/giphy.gif');background-size:cover;background-position:center;background-attachment:fixed;background-blend-mode:overlay}
+.stage{height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;perspective:1200px}
+.gift-wrap{transform-style:preserve-3d}
+.gift-box{width:320px;height:220px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.9,.3,1);transform:translateZ(0)}
+.gift-box .box{width:100%;height:100%;background:linear-gradient(180deg,var(--box),#ff6b97);border-radius:12px;box-shadow:0 30px 60px rgba(0,0,0,.2);position:relative;transform:translateZ(8px)}
+.gift-box .lid{position:absolute;top:-50px;left:10px;right:10px;height:100px;background:linear-gradient(180deg,#fff,#ffd2df);border-radius:16px;transform-origin:50% 100%;transform:rotateX(0deg) translateZ(30px);transition:transform .9s cubic-bezier(.2,.9,.3,1);box-shadow:0 12px 26px rgba(0,0,0,.18)}
+.gift-box.open .lid{transform:rotateX(-110deg) translateZ(40px);}
+.gift-box:active{transform:scale(.98) rotateX(4deg)}
+
+/* ribbon */
+.ribbon{position:absolute;background:linear-gradient(90deg,var(--accent),#ff145f);box-shadow:0 6px 14px rgba(0,0,0,.12);}
+.ribbon.horizontal{height:26px;left:0;right:0;top:105px;border-radius:6px}
+.ribbon.vertical{width:26px;top:0;bottom:0;left:145px;margin:auto;border-radius:6px}
+
+/* subtle top bow */
+.gift-box::after{content:"";position:absolute;left:50%;top:54px;width:48px;height:26px;background:linear-gradient(90deg,#fff1,#ff7aa0);transform:translateX(-50%) translateZ(44px);border-radius:6px;box-shadow:0 6px 12px rgba(0,0,0,.12)}
+
+.gift-box.open{transform:translateY(-14px) rotateX(4deg)}
+
+/* bow SVG styling */
+.bow-svg{position:absolute;left:50%;top:28px;transform:translateX(-50%) translateZ(54px);pointer-events:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.12));transition:transform .8s cubic-bezier(.2,.9,.3,1),opacity .4s}
+.gift-box.open .bow-svg{transform:translateX(-50%) translateY(-8px) rotateX(8deg) scale(1.02) translateZ(64px)}
+.bow-left,.bow-right{transform-origin:40px 28px;transition:transform .9s cubic-bezier(.2,.9,.3,1)}
+.gift-box.open .bow-left{transform:translateX(-6px) rotate(-18deg)}
+.gift-box.open .bow-right{transform:translateX(6px) rotate(18deg)}
+.bow-knot{transition:transform .6s ease}
+.gift-box.open .bow-knot{transform:scale(1.03)}
+
+
+.content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;max-width:95vw;padding:0;background:transparent;display:flex;flex-direction:column;gap:40px;align-items:center;justify-content:center;overflow:visible}
+.content.hidden{opacity:0;pointer-events:none;transform:translate(-50%,-48%);transition:all .6s ease}
+.content.visible{opacity:1;pointer-events:auto;transform:translate(-50%,-50%);}
+
+/* Heart container with clipped shape containing text */
+.heart-container{width:420px;height:400px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#fff8fb 0%,#fff 50%,#fff9fc 100%);clip-path:url(#heartClip);-webkit-clip-path:url(#heartClip);box-shadow:0 30px 60px rgba(214,51,108,0.15)}
+
+/* Heart content wrapper - text positioned to be visible within heart */
+.heart-content{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;z-index:10;position:relative;width:100%;height:100%;padding:25px 30px 15px 30px;box-sizing:border-box;overflow:visible}
+
+/* Text inside heart */
+.heart-text{margin:0;font-size:26px;color:#d6336c;text-align:center;font-weight:700;line-height:1.2;max-width:340px;letter-spacing:-0.8px;text-shadow:0 2px 4px rgba(255,255,255,0.5)}
+.my-text{font-size:36px;font-weight:900;display:block;margin:2px 0;letter-spacing:-1px}
+
+/* Vine/flower decoration around heart edges */
+.vine-decoration{position:absolute;inset:-35px;z-index:0;opacity:0.95;pointer-events:none;background-image:radial-gradient(circle 20px at 5% 12%, #ff1493, #ff69b4 20px),radial-gradient(circle 18px at 95% 15%, #ff69b4, #ffb6c1 18px),radial-gradient(circle 19px at 3% 50%, #ff1493, #ff69b4 19px),radial-gradient(circle 18px at 97% 52%, #ff69b4, #ffb6c1 18px),radial-gradient(circle 20px at 8% 88%, #ff1493, #ffb6c1 20px),radial-gradient(circle 19px at 92% 85%, #ff69b4, #ffb6c1 19px),radial-gradient(circle 18px at 50% 5%, #ff1493, #ff69b4 18px),radial-gradient(circle 19px at 50% 95%, #ff69b4, #ffb6c1 19px);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1))}
+
+.yes-btn{margin-top:20px;padding:12px 32px;background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;font-weight:700;border-radius:28px;cursor:pointer;font-size:18px;transition:transform .3s ease,box-shadow .3s ease;box-shadow:0 8px 20px rgba(255,51,95,0.3);z-index:10;position:relative}
+.yes-btn:hover{transform:scale(1.1);box-shadow:0 10px 24px rgba(255,51,95,0.4)}
+.yes-btn:active{transform:scale(0.95)}
+
+/* Bird formation layout - positioned below heart in V-formation, not clipped */
+.bird-formation{width:100%;display:flex;align-items:flex-start;justify-content:center;gap:20px;flex-wrap:wrap;perspective:1000px;max-width:700px;margin:0 auto}
+
+.bird-item{width:110px;height:80px;border-radius:10px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.2);opacity:0;transform:translateY(50px) scale(0.3);will-change:transform,opacity;flex:0 0 auto}
+
+.bird-item img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Pop animation keyframes */
+@keyframes birdPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) translateY(60px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.bird-item.show{animation:birdPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards}
+
+/* V-formation bird positioning */
+.bird-item:nth-child(1){order:1;animation-delay:0ms;margin-top:40px}
+.bird-item:nth-child(2){order:2;animation-delay:100ms;margin-top:20px}
+.bird-item:nth-child(3){order:3;animation-delay:200ms;margin-top:0px}
+.bird-item:nth-child(4){order:4;animation-delay:300ms;margin-top:20px}
+.bird-item:nth-child(5){order:5;animation-delay:400ms;margin-top:40px}
+
+/* GIF embed container */
+.gif-container{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1000;background:white;border-radius:16px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25);max-width:480px;width:90%;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.gif-container.visible{opacity:1;pointer-events:auto}
+.gif-container.hidden{display:none}
+.tenor-gif-embed{width:100%;border-radius:12px;overflow:hidden}
+
+.trail-layer{position:fixed;inset:0;pointer-events:none}
+.trail-item{position:fixed;width:48px;height:48px;border-radius:8px;overflow:hidden;pointer-events:none;will-change:transform,opacity;transform-origin:center}
+
+/* Heart stage and bird-formation styles */
+.heart-stage{width:280px;height:200px;flex:0 0 200px;position:relative;border-radius:18px;display:block;margin:0}
+.heart-stage .heart-bg{position:absolute;inset:0;background:radial-gradient(circle at 35% 30%, #fff4f6, transparent 40%), linear-gradient(180deg,#ffeef3,#ffdde8);border-radius:18px;filter:drop-shadow(0 12px 30px rgba(214,51,108,0.08));}
+
+/* music control */
+.music-control{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.85);box-shadow:0 8px 20px rgba(0,0,0,.08);font-size:12px}
+.music-btn{background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;padding:5px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:11px}
+.music-btn:active{transform:scale(.98)}
+.music-label{font-size:11px;color:#6b4953;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trail-item img{width:100%;height:100%;object-fit:cover}
+
+@media (max-width:768px){
+  .stage{height:auto;min-height:100vh;padding:20px 0}
+  .content{width:95vw;max-width:500px;gap:30px;flex-wrap:wrap}
+  .heart-container{width:300px;height:300px}
+  .heart-content{padding:20px 20px 12px 20px}
+  .heart-text{font-size:18px;max-width:220px;line-height:1.15;letter-spacing:-0.6px}
+  .my-text{font-size:26px;margin:2px 0;letter-spacing:-0.8px}
+  .yes-btn{font-size:16px;padding:10px 26px;margin-top:10px}
+  .bird-formation{gap:15px;max-width:400px}
+  .bird-item{width:85px;height:60px}
+  .bird-item:nth-child(1){margin-top:30px}
+  .bird-item:nth-child(2){margin-top:15px}
+  .bird-item:nth-child(3){margin-top:0px}
+  .bird-item:nth-child(4){margin-top:15px}
+  .bird-item:nth-child(5){margin-top:30px}
+  .vine-decoration{inset:-25px;opacity:0.9}
+}
+
+@media (max-width:480px){
+  .stage{min-height:100vh;padding:10px 0}
+  .content{width:98vw;max-width:100%;gap:18px}
+  .heart-container{width:240px;height:240px}
+  .heart-content{padding:16px 12px 10px 12px}
+  .heart-text{font-size:13px;max-width:170px;line-height:1.1;letter-spacing:-0.6px}
+  .my-text{font-size:18px;margin:1px 0;letter-spacing:-0.8px}
+  .yes-btn{font-size:13px;padding:6px 16px;margin-top:8px}
+  .bird-formation{gap:8px;flex-wrap:wrap;max-width:250px}
+  .bird-item{width:70px;height:50px}
+  .bird-item:nth-child(1){margin-top:25px}
+  .bird-item:nth-child(2){margin-top:12px}
+  .bird-item:nth-child(3){margin-top:0px}
+  .bird-item:nth-child(4){margin-top:12px}
+  .bird-item:nth-child(5){margin-top:25px}
+  .vine-decoration{inset:-15px;opacity:0.8}
+  .music-control{font-size:10px}
+  .music-label{font-size:10px;max-width:100px}
+}

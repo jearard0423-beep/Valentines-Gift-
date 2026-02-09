@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Surprise Gift Box</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- SVG defs for reusable clip path (heart) -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+        <!-- a heart path in normalized coordinates -->
+        <path d="M0.5 0.2 C0.15 0.0, 0.0 0.35, 0.25 0.6 C0.25 0.6, 0.5 0.85, 0.5 0.85 C0.5 0.85, 0.75 0.6, 0.75 0.6 C1.0 0.35, 0.85 0.0, 0.5 0.2 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+</head>
+<body>
+  <main class="stage">
+    <div id="giftWrap" class="gift-wrap">
+      <div id="gift" class="gift-box" role="button" aria-label="Open gift" tabindex="0">
+        <div class="lid"></div>
+        <div class="box"></div>
+        <div class="ribbon horizontal"></div>
+        <div class="ribbon vertical"></div>
+        <!-- Decorative SVG bow -->
+        <svg class="bow-svg" width="120" height="72" viewBox="0 0 120 72" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="#ff9bb3" />
+              <stop offset="1" stop-color="#ff5d8f" />
+            </linearGradient>
+          </defs>
+          <g transform="translate(10,6)">
+            <path class="bow-left" d="M40 24 C10 0, 2 44, 40 36 C26 30, 34 30, 40 24 Z" fill="url(#g1)"/>
+            <path class="bow-right" d="M40 24 C70 0, 78 44, 40 36 C54 30, 46 30, 40 24 Z" fill="url(#g1)"/>
+            <circle class="bow-knot" cx="40" cy="28" r="8" fill="#ff115f" />
+          </g>
+        </svg>
+      </div>
+      <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+    </div>
+
+    <div id="content" class="content hidden">
+      <!-- Heart shape container (clipped) with text and button -->
+      <div class="heart-container">
+        <!-- Decorative vines around heart -->
+        <div class="vine-decoration"></div>
+        <!-- Text and button content (on top of flowers) -->
+        <div class="heart-content">
+          <h2 class="heart-text">Will you be<br><span class="my-text">My</span><br>Valentine?</h2>
+          <button id="yesBtn" class="yes-btn">💝 Yes</button>
+        </div>
+      </div>
+
+      <!-- Images in bird formation below heart (NOT clipped) -->
+      <div class="bird-formation" id="birdFormation">
+        <!-- Images will be injected here by script.js -->
+      </div>
+
+      <!-- Gift container for Yes button click -->
+      <div id="gifContainer" class="gif-container hidden">
+        <div class="tenor-gif-embed" data-postid="12815241424229139678" data-share-method="host" data-aspect-ratio="1.14747" data-width="100%"><a href="https://tenor.com/view/facebook-gif-12815241424229139678">Facebook GIF</a>from <a href="https://tenor.com/search/facebook-gifs">Facebook GIFs</a></div>
+      </div>
+
+      <!-- Music control -->
+      <div class="music-control" id="musicControl">
+        <button id="musicBtn" class="music-btn" aria-pressed="false" title="Play love - Wave to Earth">▶ Music</button>
+        <span class="music-label">Love — Wave to Earth</span>
+      </div>
+    </div>
+
+    <div id="trailLayer" class="trail-layer"></div>
+  </main>
+
+  <script src="script.js"></script>
+  <!-- Add audio file: `wave to earth - love. (Official Lyric Video).mp3` in root directory, or alternative names: love-wave-to-earth.mp3 or Love.mp3 -->
+  <audio id="bgAudio" preload="metadata" crossorigin="anonymous"></audio>
+  <!-- Tenor GIF embed script -->
+  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+</body>
+</html>
