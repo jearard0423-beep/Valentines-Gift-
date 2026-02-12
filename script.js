@@ -19,8 +19,12 @@
       e.stopPropagation();
       gifContainer.classList.remove('hidden');
       gifContainer.classList.add('visible');
-      // Play music when Yes is clicked
-      tryPlayAudioOnce();
+      // Burst petals animation
+      burstPetals();
+      // Play music when Yes is clicked (after user gesture)
+      setTimeout(() => {
+        tryPlayAudioOnce();
+      }, 100);
       // reload Tenor embed if needed
       if(window.twttr && window.twttr.widgets) window.twttr.widgets.load();
       if(window.Tenor) window.Tenor.lib.render(gifContainer);
@@ -40,7 +44,15 @@
   function showContent(){
     content.classList.remove('hidden');
     // small delay to let box lid open
-    setTimeout(()=> content.classList.add('visible'), 420);
+    setTimeout(()=> {
+      content.classList.add('visible');
+      // Animate letter container slide in
+      const letterContainer = document.querySelector('.letter-container');
+      if(letterContainer) letterContainer.classList.add('slide-in');
+      // Animate bird formation slide in
+      const birdFormation = document.querySelector('.bird-formation');
+      if(birdFormation) birdFormation.classList.add('slide-in-right');
+    }, 420);
     // create birds if needed and animate them into formation
     if(!birdsCreated){ populateBirds(); birdsCreated = true; }
     animateBirds();
@@ -72,9 +84,12 @@
     // cycle through images so user sees all pictures more predictably
     spawnParticle.counter = (spawnParticle.counter || 0) % imageNames.length;
     const name = imageNames[spawnParticle.counter++];
-    // prefer images/ but fallback to root if missing
-    img.src = `images/${name}`;
-    img.onerror = () => { if(!img.src.startsWith('./')) img.src = `./${name}` };
+    // Images are in root directory
+    img.src = name;
+    img.alt = 'Trail particle';
+    img.onerror = () => { 
+      if(!img.src.includes('/')) img.src = `/${name}`;
+    };
     el.appendChild(img);
     trailLayer.appendChild(el);
 
@@ -111,11 +126,24 @@
   // Background music handling
   const audio = document.getElementById('bgAudio');
   const musicBtn = document.getElementById('musicBtn');
+  
+  // Track if user has interacted with page
+  let userInteracted = false;
+  document.addEventListener('click', () => { userInteracted = true; }, {once: true});
+  document.addEventListener('touchstart', () => { userInteracted = true; }, {once: true});
+  
   if(musicBtn && audio){
     musicBtn.addEventListener('click', ()=>{
       if(audio.paused){
         audio.currentTime = 0;
-        audio.play().catch(err => console.error('Music play error:', err));
+        audio.muted = false;
+        audio.volume = 1;
+        audio.play().catch(err => {
+          console.error('Music play error:', err);
+          // Try unmuting if muted
+          audio.muted = false;
+          audio.play().catch(e => console.error('Second attempt failed:', e));
+        });
         musicBtn.textContent = '⏸ Music';
         musicBtn.setAttribute('aria-pressed','true');
       } else {
@@ -126,61 +154,78 @@
     });
   }
 
-  // Attempt to locate MP3 file among common candidate names (handles spaces/parentheses)
+  // Attempt to load audio with proper error handling
   (function resolveAudioSrc(){
     if(!audio) return;
     
-    // Try multiple candidate paths in order of likelihood
-    const candidates = [
-      'wave to earth - love. (Official Lyric Video).mp3',
-      'love-wave-to-earth.mp3',
-      'Love.mp3',
-      'audio/wave to earth - love. (Official Lyric Video).mp3',
-      'audio/love-wave-to-earth.mp3',
-    ];
+    // Set audio src directly to the exact filename
+    audio.src = 'wavetoearth.mp3';
+    audio.crossOrigin = 'anonymous';
+    audio.preload = 'auto';
+    audio.muted = true;  // Start muted for autoplay policies
+    console.log(`🎵 Audio source set to: ${audio.src}`);
     
-    let currentIndex = 0;
+    // Start loading immediately
+    audio.load();
     
-    const tryNextUrl = () => {
-      if(currentIndex >= candidates.length){
-        console.warn('⚠️ No audio file found. Please add MP3 to root directory.');
-        return;
-      }
-      const url = candidates[currentIndex];
-      audio.src = url;
-      console.log(`🎵 Trying audio: ${url}`);
-      currentIndex++;
-    };
-    
-    tryNextUrl();
-    
-    // Listen for canplay event (successful load)
+    // Listen for successful load
     audio.addEventListener('canplay', () => {
-      console.log(`✅ Audio loaded successfully: ${audio.src}`);
-    }, {once: false});
+      console.log(`✅ Audio can play (duration: ${audio.duration.toFixed(2)}s)`);
+    });
     
-    // Listen for errors and try next candidate
-    audio.addEventListener('error', () => {
-      console.log(`❌ Failed to load: ${audio.src}, trying next...`);
-      tryNextUrl();
+    audio.addEventListener('canplaythrough', () => {
+      console.log(`✅ Audio fully buffered`);
+    });
+    
+    // Handle loading errors
+    audio.addEventListener('error', (err) => {
+      console.error(`❌ Audio failed to load:`, err.target.error?.message || 'Unknown error');
     });
   })();
 
   function tryPlayAudioOnce(){
     if(!audio) return;
-    audio.loop = false;
-    audio.currentTime = 0; // Reset to start
-    const playPromise = audio.play();
-    if(playPromise !== undefined){
-      playPromise.then(()=>{
-        console.log('🎶 Music playing!');
-        if(musicBtn){ 
-          musicBtn.textContent = '⏸ Music'; 
-          musicBtn.setAttribute('aria-pressed','true'); 
+    console.log('🎵 Attempting to play audio after user interaction...');
+    
+    // Reset audio state
+    audio.currentTime = 0;
+    audio.volume = 0.8;
+    audio.muted = false;  // Unmute when user interacts
+    audio.loop = true;
+    
+    // Ensure audio is playing
+    if(audio.paused) {
+      // Attempt playback
+      const playPromise = audio.play();
+      
+      if(playPromise === undefined){
+        console.log('⚠️ Browser does not support play() promise');
+        if(musicBtn){
+          musicBtn.textContent = '⏸ Music';
+          musicBtn.setAttribute('aria-pressed', 'true');
         }
-      }).catch((error)=>{
-        console.error('❌ Playback failed:', error);
-      });
+        return;
+      }
+      
+      playPromise
+        .then(() => {
+          console.log('✅ Audio playing successfully!');
+          if(musicBtn){
+            musicBtn.textContent = '⏸ Music';
+            musicBtn.setAttribute('aria-pressed', 'true');
+          }
+        })
+        .catch((error) => {
+          console.error('❌ Play failed:', error.name, '-', error.message);
+          console.log('📊 Audio state:', {
+            paused: audio.paused,
+            muted: audio.muted,
+            volume: audio.volume,
+            src: audio.src,
+            readyState: audio.readyState,
+            networkState: audio.networkState
+          });
+        });
     }
   }
 
@@ -191,9 +236,17 @@
       const item = document.createElement('div');
       item.className = 'bird-item';
       const img = document.createElement('img');
-      // try images/ then fallback to root
-      img.src = `images/${name}`;
-      img.onerror = () => { if(img.src.indexOf(name)===-1) img.src = name; else if(!img.src.startsWith('./')) img.src = `./${name}` };
+      // Images are in root directory, not in images/ folder
+      img.src = name;
+      img.alt = `Picture ${idx + 1}`;
+      img.onerror = () => { 
+        console.error(`Failed to load image: ${img.src}`);
+        // Try with explicit path if needed
+        if(!img.src.includes('/')) img.src = `/${name}`;
+      };
+      img.addEventListener('load', () => {
+        console.log(`✅ Image loaded: ${name}`);
+      });
       item.appendChild(img);
       birdFormation.appendChild(item);
     });
@@ -245,6 +298,46 @@
   function randomColor(){
     const palette = ['#ff5d8f','#ffd166','#9be7ff','#ffb3c6','#c78bff','#ff8a5b'];
     return palette[Math.floor(Math.random()*palette.length)];
+  }
+
+  // Petal burst animation on Yes click - flower grenade effect
+  function burstPetals(){
+    const petalCount = 64;
+    const gifContainer = document.getElementById('gifContainer');
+    const rect = gifContainer ? gifContainer.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0};
+    const centerX = rect.left + rect.width/2;
+    const centerY = rect.top + rect.height/2;
+    
+    for(let i = 0; i < petalCount; i++){
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      const angle = (i / petalCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+      const distance = 150 + Math.random() * 450;
+      const velocity = 0.8 + Math.random() * 0.8;
+      const tx = Math.cos(angle) * distance * velocity;
+      const ty = Math.sin(angle) * distance * velocity;
+      
+      petal.style.background = randomColor();
+      petal.style.left = centerX + 'px';
+      petal.style.top = centerY + 'px';
+      petal.style.setProperty('--tx', tx + 'px');
+      petal.style.setProperty('--ty', ty + 'px');
+      document.body.appendChild(petal);
+      
+      const duration = 1800 + Math.random() * 800; // Slower: 1800-2600ms
+      const delay = Math.random() * 100;
+      petal.animate([
+        {opacity: 1, transform: 'translate(0, 0) scale(1) rotate(0deg)'},
+        {opacity: 0, transform: `translate(${tx}px, ${ty}px) scale(0.1) rotate(720deg)`}
+      ], {
+        duration: duration,
+        delay: delay,
+        easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        fill: 'forwards'
+      });
+      
+      setTimeout(() => petal.remove(), duration + delay);
+    }
   }
 
   // Accessibility: press Enter/Space to toggle gift

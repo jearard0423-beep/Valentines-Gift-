@@ -33,35 +33,83 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-
 .gift-box.open .bow-knot{transform:scale(1.03)}
 
 
-.content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;max-width:95vw;padding:0;background:transparent;display:flex;flex-direction:column;gap:40px;align-items:center;justify-content:center;overflow:visible}
+.content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;max-width:100%;padding:0 clamp(10px,3vw,20px);background:transparent;display:flex;flex-direction:column;gap:0;align-items:center;justify-content:center;overflow:visible;min-height:100%}
 .content.hidden{opacity:0;pointer-events:none;transform:translate(-50%,-48%);transition:all .6s ease}
 .content.visible{opacity:1;pointer-events:auto;transform:translate(-50%,-50%);}
 
-/* Heart container with clipped shape containing text */
-.heart-container{width:420px;height:400px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#fff8fb 0%,#fff 50%,#fff9fc 100%);clip-path:url(#heartClip);-webkit-clip-path:url(#heartClip);box-shadow:0 30px 60px rgba(214,51,108,0.15)}
+/* Two-column wrapper - responsive scaling */
+.content-wrapper{display:flex;flex-direction:column;gap:clamp(20px,5vw,60px);align-items:center;justify-content:center;width:100%;padding:0 clamp(10px,3vw,30px);max-width:100%;margin:0 auto}
 
-/* Heart content wrapper - text positioned to be visible within heart */
-.heart-content{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;z-index:10;position:relative;width:100%;height:100%;padding:25px 30px 15px 30px;box-sizing:border-box;overflow:visible}
 
-/* Text inside heart */
-.heart-text{margin:0;font-size:26px;color:#d6336c;text-align:center;font-weight:700;line-height:1.2;max-width:340px;letter-spacing:-0.8px;text-shadow:0 2px 4px rgba(255,255,255,0.5)}
-.my-text{font-size:36px;font-weight:900;display:block;margin:2px 0;letter-spacing:-1px}
+.letter-container{width:min(90vw,350px);flex:0 0 auto;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:linear-gradient(135deg,#ffd9e8 0%,#ffe6f0 100%);border:3px solid #6b4953;border-radius:0px;box-shadow:0 20px 50px rgba(0,0,0,0.15);padding:clamp(35px,5vw,50px) clamp(18px,4vw,28px) clamp(35px,5vw,50px) clamp(18px,4vw,28px);min-height:auto;margin:0 auto;overflow:hidden}
 
-/* Vine/flower decoration around heart edges */
-.vine-decoration{position:absolute;inset:-35px;z-index:0;opacity:0.95;pointer-events:none;background-image:radial-gradient(circle 20px at 5% 12%, #ff1493, #ff69b4 20px),radial-gradient(circle 18px at 95% 15%, #ff69b4, #ffb6c1 18px),radial-gradient(circle 19px at 3% 50%, #ff1493, #ff69b4 19px),radial-gradient(circle 18px at 97% 52%, #ff69b4, #ffb6c1 18px),radial-gradient(circle 20px at 8% 88%, #ff1493, #ffb6c1 20px),radial-gradient(circle 19px at 92% 85%, #ff69b4, #ffb6c1 19px),radial-gradient(circle 18px at 50% 5%, #ff1493, #ff69b4 18px),radial-gradient(circle 19px at 50% 95%, #ff69b4, #ffb6c1 19px);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1))}
+/* Top flap effect */
+.letter-container::before{content:'';position:absolute;top:0;left:0;right:0;height:35px;background:linear-gradient(135deg,#ffb3d0 0%,#ffc9db 100%);border:3px solid #6b4953;border-bottom:2px dashed #6b4953;box-shadow:inset 0 2px 8px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.15);z-index:5}
 
-.yes-btn{margin-top:20px;padding:12px 32px;background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;font-weight:700;border-radius:28px;cursor:pointer;font-size:18px;transition:transform .3s ease,box-shadow .3s ease;box-shadow:0 8px 20px rgba(255,51,95,0.3);z-index:10;position:relative}
-.yes-btn:hover{transform:scale(1.1);box-shadow:0 10px 24px rgba(255,51,95,0.4)}
+/* Center divider line - fold down the middle */
+.letter-container::after{content:'';position:absolute;left:50%;top:35px;bottom:0;width:2px;background:repeating-linear-gradient(180deg,#6b4953 0px,#6b4953 5px,transparent 5px,transparent 10px);opacity:0.4;z-index:4}
+
+
+.letter-content{display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;position:relative;width:100%;height:auto;padding:0;box-sizing:border-box;overflow:visible;text-align:center}
+
+
+.letter-title{margin:0 0 clamp(12px,3vw,20px) 0;font-size:clamp(16px,4vw,24px);color:#d6336c;font-weight:900;position:relative;top:auto;left:auto}
+.letter-body{color:#6b4953;font-size:clamp(11px,2.5vw,14px);line-height:1.4;max-height:none;overflow:hidden;display:block;margin:0;padding:0;word-wrap:break-word;word-break:break-word}
+.letter-body p{margin:clamp(8px,2vw,12px) 0}
+.signature{margin:clamp(12px,2.5vw,16px) 0 0 0;font-size:clamp(10px,2vw,12px);font-weight:600}
+
+
+.yes-btn{margin:clamp(16px,4vw,24px) 0 0 0;padding:clamp(10px,2.5vw,14px) clamp(24px,5vw,40px);background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;font-weight:700;border-radius:24px;cursor:pointer;font-size:clamp(13px,3vw,16px);transition:transform .3s ease,box-shadow .3s ease;box-shadow:0 6px 16px rgba(255,51,95,0.3);z-index:10;position:relative}
+.yes-btn:hover{transform:scale(1.1);box-shadow:0 8px 20px rgba(255,51,95,0.4)}
 .yes-btn:active{transform:scale(0.95)}
 
-/* Bird formation layout - positioned below heart in V-formation, not clipped */
-.bird-formation{width:100%;display:flex;align-items:flex-start;justify-content:center;gap:20px;flex-wrap:wrap;perspective:1000px;max-width:700px;margin:0 auto}
+/* Bird formation layout - heart shape on right side */
+.bird-formation{display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(9,1fr);position:relative;width:min(90vw,320px);height:min(90vw,320px);gap:8px;perspective:1000px;align-items:center;justify-items:center;padding:0;margin:0 auto;top:auto;left:auto;right:auto}
 
-.bird-item{width:110px;height:80px;border-radius:10px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.2);opacity:0;transform:translateY(50px) scale(0.3);will-change:transform,opacity;flex:0 0 auto}
+/* Cross pattern positioning */
+.bird-item{width:min(55px,12vw);height:min(55px,12vw);position:relative;box-shadow:0 10px 25px rgba(0,0,0,.15);opacity:0;transform:translateY(50px) scale(0.3);will-change:transform,opacity;clip-path:url(#heartClip);cursor:pointer}
+
+/* Heart formation - arranging 5 pictures in a heart shape */
+.bird-item:nth-child(1){grid-column:5;grid-row:2;z-index:5;animation-delay:0ms}
+.bird-item:nth-child(2){grid-column:2;grid-row:5;z-index:4;animation-delay:100ms}
+.bird-item:nth-child(3){grid-column:8;grid-row:5;z-index:3;animation-delay:200ms}
+.bird-item:nth-child(4){grid-column:3;grid-row:8;z-index:2;animation-delay:300ms}
+.bird-item:nth-child(5){grid-column:7;grid-row:8;z-index:1;animation-delay:400ms}
 
 .bird-item img{width:100%;height:100%;object-fit:cover;display:block}
 
-/* Pop animation keyframes */
+
+/* Letter slide-in animation */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.letter-container.slide-in {
+  animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.bird-formation.slide-in-right {
+  animation: slideInRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
 @keyframes birdPop {
   0% {
     opacity: 0;
@@ -79,16 +127,31 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-
 
 .bird-item.show{animation:birdPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards}
 
-/* V-formation bird positioning */
-.bird-item:nth-child(1){order:1;animation-delay:0ms;margin-top:40px}
-.bird-item:nth-child(2){order:2;animation-delay:100ms;margin-top:20px}
-.bird-item:nth-child(3){order:3;animation-delay:200ms;margin-top:0px}
-.bird-item:nth-child(4){order:4;animation-delay:300ms;margin-top:20px}
-.bird-item:nth-child(5){order:5;animation-delay:400ms;margin-top:40px}
+/* Petal burst animation */
+@keyframes petalBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(360deg);
+  }
+}
+
+.petal {
+  position: fixed;
+  width: clamp(20px, 5vw, 40px);
+  height: clamp(20px, 5vw, 40px);
+  pointer-events: none;
+  border-radius: 50% 0 50% 50%;
+  will-change: transform, opacity;
+  z-index: 999;
+}
 
 /* GIF embed container */
-.gif-container{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1000;background:white;border-radius:16px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25);max-width:480px;width:90%;opacity:0;pointer-events:none;transition:opacity .4s ease}
-.gif-container.visible{opacity:1;pointer-events:auto}
+.gif-container{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);z-index:1000;background:white;border-radius:16px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25);max-width:480px;width:90%;opacity:0;pointer-events:none;transition:opacity .4s ease,transform .5s cubic-bezier(0.34, 1.56, 0.64, 1)}
+.gif-container.visible{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
 .gif-container.hidden{display:none}
 .tenor-gif-embed{width:100%;border-radius:12px;overflow:hidden}
 
@@ -101,45 +164,63 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-
 
 /* music control */
 .music-control{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.85);box-shadow:0 8px 20px rgba(0,0,0,.08);font-size:12px}
-.music-btn{background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;padding:5px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:11px}
+.music-btn{display:none;background:linear-gradient(90deg,#ff6b97,#ff335f);border:none;color:white;padding:5px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:11px}
 .music-btn:active{transform:scale(.98)}
 .music-label{font-size:11px;color:#6b4953;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .trail-item img{width:100%;height:100%;object-fit:cover}
 
-@media (max-width:768px){
-  .stage{height:auto;min-height:100vh;padding:20px 0}
-  .content{width:95vw;max-width:500px;gap:30px;flex-wrap:wrap}
-  .heart-container{width:300px;height:300px}
-  .heart-content{padding:20px 20px 12px 20px}
-  .heart-text{font-size:18px;max-width:220px;line-height:1.15;letter-spacing:-0.6px}
-  .my-text{font-size:26px;margin:2px 0;letter-spacing:-0.8px}
-  .yes-btn{font-size:16px;padding:10px 26px;margin-top:10px}
-  .bird-formation{gap:15px;max-width:400px}
-  .bird-item{width:85px;height:60px}
-  .bird-item:nth-child(1){margin-top:30px}
-  .bird-item:nth-child(2){margin-top:15px}
-  .bird-item:nth-child(3){margin-top:0px}
-  .bird-item:nth-child(4){margin-top:15px}
-  .bird-item:nth-child(5){margin-top:30px}
-  .vine-decoration{inset:-25px;opacity:0.9}
+/* Tablet small (600-899px) - column layout */
+@media (min-width:600px) and (max-width:899px){
+  .stage{min-height:100vh;padding:20px 0;display:flex;align-items:center}
+  .content{width:100%;max-width:100%;position:relative;top:auto;left:auto;transform:none}
+  .content-wrapper{flex-direction:column;gap:clamp(25px,5vw,40px);padding:0 clamp(12px,3vw,25px);margin:0 auto}
+  .letter-container{width:min(90vw,420px);padding:clamp(40px,5vw,50px) clamp(20px,4vw,30px);margin:0 auto}
+  .letter-title{font-size:clamp(15px,3.5vw,18px)}
+  .letter-body{font-size:clamp(11px,2.2vw,13px)}
+  .letter-body p{margin:clamp(6px,1.5vw,10px) 0}
+  .yes-btn{font-size:clamp(12px,2.5vw,14px);margin-top:clamp(12px,3vw,16px)}
+  .bird-formation{width:min(80vw,400px);height:min(80vw,400px);gap:9px;margin:0 auto}
+  .bird-item{width:min(65px,11vw);height:min(65px,11vw)}
 }
 
-@media (max-width:480px){
-  .stage{min-height:100vh;padding:10px 0}
-  .content{width:98vw;max-width:100%;gap:18px}
-  .heart-container{width:240px;height:240px}
-  .heart-content{padding:16px 12px 10px 12px}
-  .heart-text{font-size:13px;max-width:170px;line-height:1.1;letter-spacing:-0.6px}
-  .my-text{font-size:18px;margin:1px 0;letter-spacing:-0.8px}
-  .yes-btn{font-size:13px;padding:6px 16px;margin-top:8px}
-  .bird-formation{gap:8px;flex-wrap:wrap;max-width:250px}
-  .bird-item{width:70px;height:50px}
-  .bird-item:nth-child(1){margin-top:25px}
-  .bird-item:nth-child(2){margin-top:12px}
-  .bird-item:nth-child(3){margin-top:0px}
-  .bird-item:nth-child(4){margin-top:12px}
-  .bird-item:nth-child(5){margin-top:25px}
-  .vine-decoration{inset:-15px;opacity:0.8}
-  .music-control{font-size:10px}
-  .music-label{font-size:10px;max-width:100px}
+/* iPad/Tablet large (900-1199px) - column layout */
+@media (min-width:900px) and (max-width:1199px){
+  .stage{min-height:100vh;padding:30px 0;display:flex;align-items:center}
+  .content{width:100%;max-width:100%;position:relative;top:auto;left:auto;transform:none}
+  .content-wrapper{flex-direction:column;gap:clamp(30px,5vw,50px);padding:0 clamp(15px,3vw,30px);margin:0 auto}
+  .letter-container{width:min(85vw,480px);padding:clamp(40px,5vw,50px) clamp(20px,4vw,35px);margin:0 auto}
+  .letter-title{font-size:clamp(16px,3vw,18px)}
+  .letter-body{font-size:clamp(11px,2vw,13px)}
+  .letter-body p{margin:clamp(6px,1.5vw,10px) 0}
+  .yes-btn{font-size:clamp(12px,2.3vw,14px);margin-top:clamp(12px,3vw,16px)}
+  .bird-formation{width:min(80vw,450px);height:min(80vw,450px);gap:10px;margin:0 auto}
+  .bird-item{width:min(70px,11vw);height:min(70px,11vw)}
+}
+
+/* Desktop (1200px-1439px) - row layout */
+@media (min-width:1200px) and (max-width:1439px){
+  .stage{min-height:100vh;padding:40px 20px}
+  .content{width:100%;max-width:100%;top:auto;left:auto;transform:none}
+  .content-wrapper{flex-direction:row;gap:clamp(40px,6vw,80px);padding:40px clamp(20px,4vw,40px);margin:0 auto;align-items:flex-start;justify-content:center;max-width:1400px}
+  .letter-container{width:min(45vw,480px);padding:clamp(40px,4vw,50px) clamp(20px,3vw,35px);flex-shrink:0}
+  .letter-title{font-size:clamp(16px,2.5vw,20px)}
+  .letter-body{font-size:clamp(11px,1.8vw,13px)}
+  .letter-body p{margin:clamp(6px,1.2vw,10px) 0}
+  .yes-btn{font-size:clamp(12px,2vw,14px);margin-top:clamp(12px,2vw,16px)}
+  .bird-formation{width:min(45vw,500px);height:min(45vw,500px);gap:11px;flex-shrink:0}
+  .bird-item{width:min(80px,12vw);height:min(80px,12vw)}
+}
+
+/* Large Desktop (1440px+) - expanded row layout */
+@media (min-width:1440px){
+  .stage{padding:40px 20px;min-height:100vh}
+  .content{width:100%;max-width:100%;top:auto;left:auto;transform:none}
+  .content-wrapper{flex-direction:row;gap:clamp(60px,8vw,140px);padding:40px clamp(30px,5vw,60px);margin:0 auto;align-items:flex-start;justify-content:center;max-width:1600px}
+  .letter-container{width:520px;padding:50px 35px;flex-shrink:0}
+  .letter-title{font-size:24px}
+  .letter-body{font-size:14px}
+  .letter-body p{margin:10px 0}
+  .yes-btn{font-size:16px;margin-top:20px}
+  .bird-formation{width:560px;height:560px;gap:14px;flex-shrink:0}
+  .bird-item{width:150px;height:150px}
 }

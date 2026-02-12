@@ -42,20 +42,35 @@
     </div>
 
     <div id="content" class="content hidden">
-      <!-- Heart shape container (clipped) with text and button -->
-      <div class="heart-container">
-        <!-- Decorative vines around heart -->
-        <div class="vine-decoration"></div>
-        <!-- Text and button content (on top of flowers) -->
-        <div class="heart-content">
-          <h2 class="heart-text">Will you be<br><span class="my-text">My</span><br>Valentine?</h2>
+      <div class="content-wrapper">
+        <!-- Letter container with love letter and button -->
+      <div class="letter-container" role="article" aria-label="Love letter">
+        <div class="letter-content">
+          <h2 class="letter-title">Dear Love,</h2>
+          <div class="letter-body">
+            <p>They say love is in the air. In these 18 months and soon to be 19 I’ve realized something important: love isn’t always rainbows and butterflies, where everything feels perfect like in the movies. It’s deeper than that.</p>
+
+            <p>For me, love means choosing each other through both the good and the bad. It means understanding you on your complicated days, and being honest with you about the things that help you grow just as you do for me. We’ve grown so much in just 18 months, and I’m excited for all the days ahead that will shape us even more.</p>
+
+            <p>From the moment we met, I had a feeling about you. You’ve adored me in the moments I needed it most. You speak truthfully, never sugarcoating things, because you care about my growth. And the love and care you show me every single day never go unnoticed.</p>
+
+            <p>I love you always and in all ways.</p>
+
+            <p>So now I have one important question…</p>
+
+            <p><strong>Will you be my Valentine?<br>(There’s only one correct answer and it’s yes.)</strong></p>
+
+            <p class="signature">Sincerely yours,<br>Iad</p>
+          </div>
+
           <button id="yesBtn" class="yes-btn">💝 Yes</button>
         </div>
       </div>
 
-      <!-- Images in bird formation below heart (NOT clipped) -->
+      <!-- Images in bird formation on the right (heart-shaped) -->
       <div class="bird-formation" id="birdFormation">
         <!-- Images will be injected here by script.js -->
+      </div>
       </div>
 
       <!-- Gift container for Yes button click -->
@@ -74,8 +89,8 @@
   </main>
 
   <script src="script.js"></script>
-  <!-- Add audio file: `wave to earth - love. (Official Lyric Video).mp3` in root directory, or alternative names: love-wave-to-earth.mp3 or Love.mp3 -->
-  <audio id="bgAudio" preload="metadata" crossorigin="anonymous"></audio>
+  <!-- Audio element for background music -->
+  <audio id="bgAudio" preload="auto" crossorigin="anonymous"></audio>
   <!-- Tenor GIF embed script -->
   <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 </body>
