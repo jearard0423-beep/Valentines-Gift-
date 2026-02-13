@@ -6,8 +6,15 @@
   const yesBtn = document.getElementById('yesBtn');
   const gifContainer = document.getElementById('gifContainer');
 
+  // Toggle open/close with a short debounce to avoid accidental double-toggles
+  let giftAnimating = false;
   // Toggle open/close
   gift.addEventListener('click', () => {
+    if (giftAnimating) return;
+    giftAnimating = true;
+    // Keep toggling locked for the duration of the lid animation
+    setTimeout(() => { giftAnimating = false; }, 900);
+
     gift.classList.toggle('open');
     if (gift.classList.contains('open')) showContent();
     else hideContent();
@@ -16,18 +23,44 @@
   // Yes button handler to show bear GIF and play music
   if(yesBtn && gifContainer){
     yesBtn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      gifContainer.classList.remove('hidden');
-      gifContainer.classList.add('visible');
-      // Burst petals animation
-      burstPetals();
-      // Play music when Yes is clicked (after user gesture)
-      setTimeout(() => {
-        tryPlayAudioOnce();
-      }, 100);
-      // reload Tenor embed if needed
-      if(window.twttr && window.twttr.widgets) window.twttr.widgets.load();
-      if(window.Tenor) window.Tenor.lib.render(gifContainer);
+      try{
+        e.stopPropagation();
+        gifContainer.classList.remove('hidden');
+        gifContainer.classList.add('visible');
+        // Burst petals animation
+        burstPetals();
+        // Play music when Yes is clicked (after user gesture)
+        // Ensure audio src is present and attempt direct playback on this user gesture.
+        try {
+          if(audio && (!audio.src || audio.src === window.location.href || audio.src.endsWith('/'))){
+            audio.src = 'wavetoearth.mp3';
+          }
+          if(audio) {
+            // configure audio for playback
+            audio.currentTime = 0;
+            audio.muted = false;
+            audio.volume = 0.8;
+            audio.loop = true;
+            // Attempt to play immediately as this is a user gesture (best chance to satisfy autoplay policies)
+            const p = audio.play();
+            if(p && p.catch) p.catch(err => {
+              console.warn('Direct play failed, will try a short delayed play:', err);
+              setTimeout(tryPlayAudioOnce, 160);
+            });
+          }
+        } catch (errAudio) {
+          console.warn('Audio setup/playback failed:', errAudio);
+          setTimeout(tryPlayAudioOnce, 160);
+        }
+        // reload Tenor embed if needed (guard deeply)
+        try{
+          if(window.twttr && window.twttr.widgets) window.twttr.widgets.load();
+          if(window.Tenor && window.Tenor.lib && typeof window.Tenor.lib.render === 'function') window.Tenor.lib.render(gifContainer);
+        }catch(e){ console.warn('Embed render failed:', e); }
+      }catch(handlerError){
+        console.error('Error in yesBtn handler:', handlerError);
+        showAudioError('An unexpected error occurred. See console for details.');
+      }
     });
     // close GIF on outside click
     document.addEventListener('click', (e)=>{
@@ -125,34 +158,13 @@
   requestAnimationFrame(animate);
   // Background music handling
   const audio = document.getElementById('bgAudio');
-  const musicBtn = document.getElementById('musicBtn');
   
   // Track if user has interacted with page
   let userInteracted = false;
   document.addEventListener('click', () => { userInteracted = true; }, {once: true});
   document.addEventListener('touchstart', () => { userInteracted = true; }, {once: true});
   
-  if(musicBtn && audio){
-    musicBtn.addEventListener('click', ()=>{
-      if(audio.paused){
-        audio.currentTime = 0;
-        audio.muted = false;
-        audio.volume = 1;
-        audio.play().catch(err => {
-          console.error('Music play error:', err);
-          // Try unmuting if muted
-          audio.muted = false;
-          audio.play().catch(e => console.error('Second attempt failed:', e));
-        });
-        musicBtn.textContent = '⏸ Music';
-        musicBtn.setAttribute('aria-pressed','true');
-      } else {
-        audio.pause();
-        musicBtn.textContent = '▶ Music';
-        musicBtn.setAttribute('aria-pressed','false');
-      }
-    });
-  }
+  // Music will be controlled via the Yes button; inline play button removed.
 
   // Attempt to load audio with proper error handling
   (function resolveAudioSrc(){
@@ -210,6 +222,7 @@
       playPromise
         .then(() => {
           console.log('✅ Audio playing successfully!');
+          clearAudioError();
           if(musicBtn){
             musicBtn.textContent = '⏸ Music';
             musicBtn.setAttribute('aria-pressed', 'true');
@@ -225,8 +238,34 @@
             readyState: audio.readyState,
             networkState: audio.networkState
           });
+          showAudioError(`Audio failed to play: ${error.message || error.name}`);
         });
     }
+  }
+
+  // Show a small audio status message next to the letter and highlight the Yes button
+  function showAudioError(msg){
+    try{
+      let status = document.getElementById('audioStatus');
+      const container = document.querySelector('.letter-container .letter-content') || document.querySelector('.letter-container');
+      if(!status){
+        status = document.createElement('div');
+        status.id = 'audioStatus';
+        status.className = 'audio-status';
+        if(container) container.appendChild(status);
+        else if(content) content.appendChild(status);
+      }
+      status.textContent = msg;
+      if(yesBtn) yesBtn.classList.add('error');
+    }catch(e){ console.warn('Could not show audio status:', e); }
+  }
+
+  function clearAudioError(){
+    try{
+      const status = document.getElementById('audioStatus');
+      if(status) status.remove();
+      if(yesBtn) yesBtn.classList.remove('error');
+    }catch(e){ /* ignore */ }
   }
 
   // populate the bird formation with image items
